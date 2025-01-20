@@ -1,0 +1,63 @@
+﻿@model List<Palestine_News.DBEntities.News>
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@* <div class="text-center"> *@
+@*     <h1 class="display-4">Welcome to Palestine News</h1> *@
+@*     <p>Stay updated with the latest news and stories from Palestine.</p> *@
+@* </div> *@
+
+@* <div class="text-center mt-4"> *@
+@*     <a class="btn btn-primary" asp-controller="News" asp-action="Index">View News</a> *@
+@*     <a class="btn btn-outline-primary" asp-controller="Account" asp-action="Login">Login</a> *@
+@* </div> *@
+
+@* <hr /> *@
+
+<!-- News Cards Section -->
+<div class="row mt-4">
+    @foreach (var newsItem in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">@newsItem.Title</h5>
+                    <p class="card-text">@newsItem.Content</p>
+                    <p class="card-text">
+                        <small class="text-muted">
+                            Category: @newsItem.Categories.CategoriesName <br />
+                            Author: @newsItem.User.UserName
+                        </small>
+                    </p>
+                    <a href="#" class="btn btn-primary">Read More</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<hr />
+
+@* <div class="row mt-4"> *@
+@*     <div class="col-md-6"> *@
+@*         <h3>Explore Categories</h3> *@
+@*         <ul class="list-group"> *@
+@*             <li class="list-group-item"> *@
+@*                 <a class="nav-link text-dark" asp-controller="Category" asp-action="Index">Categories</a> *@
+@*             </li> *@
+@*         </ul> *@
+@*     </div> *@
+@*     <div class="col-md-6"> *@
+@*         <h3>Manage Content</h3> *@
+@*         <ul class="list-group"> *@
+@*             <li class="list-group-item"> *@
+@*                 <a class="nav-link text-dark" asp-controller="Comment" asp-action="Index">Comments</a> *@
+@*             </li> *@
+@*             <li class="list-group-item"> *@
+@*                 <a class="nav-link text-dark" asp-controller="User" asp-action="Index">Users</a> *@
+@*             </li> *@
+@*         </ul> *@
+@*     </div> *@
+@* </div> *@
