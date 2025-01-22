@@ -1,0 +1,52 @@
+﻿@model Palestine_News.Models.News
+
+@{
+    ViewData["Title"] = "Create News";
+}
+
+<h2>Create News</h2>
+
+@if (ViewBag.SuccessMessage != null)
+{
+    <div class="alert alert-success">
+        @ViewBag.SuccessMessage
+    </div>
+}
+<form asp-controller="News" method="post" asp-action="AddNews">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="form-group">
+        <label asp-for="Title" class="control-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Content" class="control-label"></label>
+        <textarea asp-for="Content" class="form-control"></textarea>
+        <span asp-validation-for="Content" class="text-danger"></span>
+    </div>
+
+
+
+    <div class="form-group">
+        <label asp-for="CategoriesId" class="control-label"> Categories </label>
+        <select asp-for="CategoriesId" class="form-control" asp-items="ViewBag.CategoriesId">
+            <option value="">Select Category</option>  
+        </select>
+        <span asp-validation-for="CategoriesId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Create</button>
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

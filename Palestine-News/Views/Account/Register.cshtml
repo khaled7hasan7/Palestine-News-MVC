@@ -1,66 +1,62 @@
-﻿@model Palestine_News.ViewModels.LoginViewModel
+﻿@model Palestine_News.ViewModels.RegisterViewModel
 
 @{
-    ViewData["Title"] = "Login";
-        Layout="" ;
-
+    ViewData["Title"] = "Register";
+    Layout = ""; // Remove layout if you don't want to use a shared layout
 }
 
- 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
 
-
-
-
-
 <!-- From Uiverse.io by nathann09 -->
 <div class="rows">
     <div class="col-md-4"></div>
 
     <div class="col-md-4">
-
-
-        <form class="form" asp-action="Login" method="post">
+        <form class="form" asp-action="Register" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <p class="form-title">Login to your account</p>
+            <p class="form-title">Create an account</p>
+
+            <div class="input-container">
+                <input asp-for="UserName" placeholder="Enter username">
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+
             <div class="input-container">
                 <input asp-for="Email" type="email" placeholder="Enter email">
                 <span asp-validation-for="Email" class="text-danger"></span>
-                <span>
-                </span>
             </div>
+
             <div class="input-container">
                 <input asp-for="Password" type="password" placeholder="Enter password">
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
-            <button type="submit" class="submit">Login</button>
 
+            <div class="input-container">
+                <input asp-for="ConfirmPassword" type="password" placeholder="Confirm password">
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="submit">Register</button>
 
             <p class="signup-link">
-                No account?
-                <a asp-action="Register">Sign up</a>
+                Already have an account?
+                <a asp-action="Login">Sign in</a>
             </p>
         </form>
-
-
-
-
-
     </div>
-
 </div>
-
 
 
 <style>
 
-    body{
+    body {
         background-color: #2c3e50
     }
+
     .form {
         background-color: #fff;
         display: block;
@@ -142,4 +138,4 @@
         display: flex;
         justify-content: center;
     }
-    </style>
+</style>

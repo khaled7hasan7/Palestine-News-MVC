@@ -7,25 +7,27 @@ namespace Palestine_News.Models
 {
     public class News
     {
-        [Key] // Marks this property as the primary key
+        [Key]
         public int NewsId { get; set; }
 
-        [Required] // Ensures the field is not null
-        [StringLength(200)] // Limits the length of the title
+        [Required]
+        [StringLength(200)]
         public string Title { get; set; } = null!;
 
         [Required]
         public string Content { get; set; } = null!;
 
-        [Required]
+        //[Required]
         public int Userid { get; set; }
 
         [Required]
         public int CategoriesId { get; set; }
 
-        // Navigation properties for related entities
+        // Navigation properties
         public virtual Category Categories { get; set; } = null!;
-        public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
         public virtual User User { get; set; } = null!;
+
+
+
     }
 }

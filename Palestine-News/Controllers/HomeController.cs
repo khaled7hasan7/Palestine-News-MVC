@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Palestine_News.DBEntities;
 using System.Linq;
@@ -23,7 +24,18 @@ namespace Palestine_News.Controllers
 
             return View(news);
         }
+        public IActionResult AddNews()
+        {
 
+            ViewBag.CategoriesId = _context.Categories
+         .Select(c => new SelectListItem
+         {
+             Value = c.CategoriesId.ToString(), // Ensure this matches the property name in the model
+             Text = c.CategoriesName // Ensure this matches the property name in the model
+         })
+         .ToList();
+            return View();
+        }
         public IActionResult Privacy()
         {
             return View();
