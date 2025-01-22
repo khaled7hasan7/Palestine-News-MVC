@@ -13,3 +13,4 @@ public partial class Category
 
     public virtual ICollection<News> News { get; set; } = new List<News>();
 }
+// sealed

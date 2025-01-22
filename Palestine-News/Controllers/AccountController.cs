@@ -134,5 +134,6 @@ namespace Palestine_News.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login");
         }
+        // asd 
     }
 }
