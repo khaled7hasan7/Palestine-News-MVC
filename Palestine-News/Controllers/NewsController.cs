@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Palestine_News.DBEntities;
+using Palestine_News.Models;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Palestine_News.Controllers
@@ -18,35 +20,36 @@ namespace Palestine_News.Controllers
 
         // GET: News
 
-        public IActionResult AddNews()
+      [HttpGet]
+        public IActionResult AddNews1()
         {
+            // Fetch categories for the dropdown
+            ViewBag.Categories = _context.Categories
+                .Select(c => new SelectListItem
+                {
+                    Value = c.CategoriesId.ToString(), // Ensure this matches the property name in the model
+                    Text = c.CategoriesName // Ensure this matches the property name in the model
+                })
+                .ToList();
 
-            ViewBag.CategoriesId = _context.Categories
-         .Select(c => new SelectListItem
-         {
-             Value = c.CategoriesId.ToString(), // Ensure this matches the property name in the model
-             Text = c.CategoriesName // Ensure this matches the property name in the model
-         })
-         .ToList();
             return View();
         }
 
-        public IActionResult News()
-        {
-            var news = _context.News
-                .Include(n => n.Categories)
-                .Include(n => n.User)
-                .ToList();
+       
 
-            return View(news); // Pass the list of news articles to the view
-        }
 
+        // POST: News/AddNews
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddNews(Palestine_News.DBEntities.News news)
+        public async Task<IActionResult> AddNews1(Palestine_News.DBEntities.News news)
         {
             if (ModelState.IsValid)
             {
+                // Log the news object being submitted
+                Console.WriteLine($"Title: {news.Title}");
+                Console.WriteLine($"Content: {news.Content}");
+                Console.WriteLine($"CategoriesId: {news.CategoriesId}");
+
                 // Retrieve the UserId from the claims
                 var userIdClaim = User.FindFirst("UserId");
                 if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int userId))
@@ -59,7 +62,6 @@ namespace Palestine_News.Controllers
                         ModelState.AddModelError("", "User not found.");
                         return View(news);
                     }
-                    
 
                     news.Userid = userId; // Associate the news with the logged-in user
                 }
@@ -76,12 +78,29 @@ namespace Palestine_News.Controllers
                 // Display success message
                 ViewBag.SuccessMessage = "News created successfully!";
 
-                // Return the same view
-                return View(news);
+                // Clear the form
+                ModelState.Clear();
+
+                // Repopulate categories for the dropdown
+                ViewBag.Categories = _context.Categories
+                    .Select(c => new SelectListItem
+                    {
+                        Value = c.CategoriesId.ToString(),
+                        Text = c.CategoriesName
+                    })
+                    .ToList();
+
+                return View();
             }
 
-            // If validation fails, repopulate dropdowns and return to the form
-            ViewBag.CategoriesId = _context.Categories
+            // If validation fails, log the errors
+            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+            {
+                Console.WriteLine($"Validation Error: {error.ErrorMessage}");
+            }
+
+            // Repopulate categories for the dropdown
+            ViewBag.Categories = _context.Categories
                 .Select(c => new SelectListItem
                 {
                     Value = c.CategoriesId.ToString(),
@@ -91,11 +110,38 @@ namespace Palestine_News.Controllers
 
             return View(news);
         }
+    
 
+     public IActionResult Create()
+        {
+            // Fetch categories and pass them to the view using ViewBag
+            ViewBag.Categories = _context.Categories.ToList();
+            return View();
+        }
 
         // POST: News/Create
-       
+       [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create([Bind("Title,Content,CategoriesId")] Models.News news)
+    {
+        if (ModelState.IsValid)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        
+            if (string.IsNullOrEmpty(userId))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            news.Userid = int.Parse(userId);
+            _context.Add(news);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        ViewBag.Categories = _context.Categories.ToList();
+        return View(news);
+    }
     }
 }

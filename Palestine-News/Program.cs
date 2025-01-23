@@ -17,7 +17,19 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     {
         options.LoginPath = "/Account/Login"; // Redirect to login page if unauthorized
         options.AccessDeniedPath = "/Account/AccessDenied"; // Redirect to access denied page
+        options.Cookie.HttpOnly = true; // Make the cookie accessible only through HTTP
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Ensure the cookie is only sent over HTTPS
+        options.SlidingExpiration = true; // Renew the cookie expiration time on each request
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(30); // Set cookie expiration time
     });
+
+// Add session support
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Session timeout
+    options.Cookie.HttpOnly = true; // Make the session cookie HTTP-only
+    options.Cookie.IsEssential = true; // Mark the session cookie as essential
+});
 
 // Add authorization
 builder.Services.AddAuthorization();
@@ -25,10 +37,14 @@ builder.Services.AddAuthorization();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
+    app.UseDeveloperExceptionPage(); // Show detailed errors in development
+}
+else
+{
+    app.UseExceptionHandler("/Home/Error"); // Custom error page for production
+    app.UseHsts(); // Enable HTTP Strict Transport Security (HSTS)
 }
 
 app.UseHttpsRedirection();
@@ -36,10 +52,14 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+// Enable session middleware
+app.UseSession();
+
 // Enable authentication and authorization
 app.UseAuthentication(); // Ensure this is called before UseAuthorization
 app.UseAuthorization();
 
+// Map default controller route
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Account}/{action=Login}/{id?}");

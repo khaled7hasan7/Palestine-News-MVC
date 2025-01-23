@@ -17,25 +17,44 @@ namespace Palestine_News.Controllers
 
         public IActionResult Index()
         {
+
+        var userId = User.FindFirst("UserId")?.Value;
+
+            Console.Write("1 userid = "+userId) ;
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            var user = _context.Users.Find(int.Parse(userId));
+            
+            ViewBag.UserName = user?.UserName;
             var news = _context.News
                 .Include(n => n.Categories) // Include related category data
                 .Include(n => n.User) // Include related user data
                 .ToList();
 
             return View(news);
-        }
-        public IActionResult AddNews()
-        {
+         }
 
-            ViewBag.CategoriesId = _context.Categories
-         .Select(c => new SelectListItem
-         {
-             Value = c.CategoriesId.ToString(), // Ensure this matches the property name in the model
-             Text = c.CategoriesName // Ensure this matches the property name in the model
-         })
-         .ToList();
+        public IActionResult Indexx()
+        {
+            // Retrieve UserId from claims
+            var userId = User.FindFirst("UserId")?.Value;
+            Console.Write("1 userid = "+userId) ;
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            // Fetch user details (optional)
+            var user = _context.Users.Find(int.Parse(userId));
+            
+            ViewBag.UserName = user?.UserName;
+
             return View();
         }
+    
+         
         public IActionResult Privacy()
         {
             return View();
